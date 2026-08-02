@@ -1,19 +1,25 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-interface HealthResponse {
-  status: string;
-  service: string;
-  environment: string;
-  timestamp: string;
-}
+import { HealthResponseDto } from './dto/health-response.dto';
 
+@ApiTags('Saúde')
 @Controller('health')
 export class HealthController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get()
-  getHealth(): HealthResponse {
+  @ApiOperation({
+    summary: 'Verificar o estado da API',
+    description:
+      'Informa se o backend da Pokédex está executando corretamente.',
+  })
+  @ApiOkResponse({
+    description: 'A API está funcionando corretamente.',
+    type: HealthResponseDto,
+  })
+  getHealth(): HealthResponseDto {
     const environment = this.configService.get<string>(
       'NODE_ENV',
       'development',
