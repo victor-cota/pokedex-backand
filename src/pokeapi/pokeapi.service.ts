@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { isAxiosError } from 'axios';
 
+import { PokeApiEvolutionChainResponse } from './interfaces/poke-api-evolution-chain-response.interface';
 import { PokeApiPokemonResponse } from './interfaces/poke-api-pokemon-response.interface';
 import { PokeApiPokemonSpeciesResponse } from './interfaces/poke-api-pokemon-species-response.interface';
 import { PokeApiTypeResponse } from './interfaces/poke-api-type-response.interface';
@@ -41,6 +42,21 @@ export class PokeApiService {
     return this.getResource<PokeApiTypeResponse>(
       `type/${encodeURIComponent(identifier)}`,
       `Tipo "${idOrName}" não encontrado.`,
+    );
+  }
+
+  async findEvolutionChain(
+    evolutionChainId: number,
+  ): Promise<PokeApiEvolutionChainResponse> {
+    if (!Number.isInteger(evolutionChainId) || evolutionChainId <= 0) {
+      throw new BadGatewayException(
+        'A PokéAPI retornou um identificador de cadeia evolutiva inválido.',
+      );
+    }
+
+    return this.getResource<PokeApiEvolutionChainResponse>(
+      `evolution-chain/${evolutionChainId}`,
+      `Cadeia evolutiva "${evolutionChainId}" não encontrada.`,
     );
   }
 

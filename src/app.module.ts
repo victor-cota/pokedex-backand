@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { envValidationSchema } from './config/env.validation';
+import { EvolutionModule } from './evolution/evolution.module';
 import { HealthModule } from './health/health.module';
 import { PokemonModule } from './pokemon/pokemon.module';
 import { TypeEffectivenessModule } from './type-effectiveness/type-effectiveness.module';
@@ -20,6 +21,7 @@ import { TypeEffectivenessModule } from './type-effectiveness/type-effectiveness
     HealthModule,
     PokemonModule,
     TypeEffectivenessModule,
+    EvolutionModule,
   ],
 })
 export class AppModule {}
