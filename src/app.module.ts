@@ -7,7 +7,6 @@ import { HealthModule } from './health/health.module';
 import { IdentificationModule } from './identification/identification.module';
 import { PokemonModule } from './pokemon/pokemon.module';
 import { TypeEffectivenessModule } from './type-effectiveness/type-effectiveness.module';
-import { GeminiModule } from './gemini/gemini.module';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { GeminiModule } from './gemini/gemini.module';
     TypeEffectivenessModule,
     EvolutionModule,
     IdentificationModule,
-    GeminiModule,
   ],
 })
 export class AppModule {}

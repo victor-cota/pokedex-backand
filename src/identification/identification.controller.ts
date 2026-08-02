@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
+  ApiBadGatewayResponse,
   ApiBadRequestResponse,
   ApiBody,
   ApiConsumes,
@@ -21,8 +22,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { GeminiIdentificationResultDto } from '../gemini/dto/gemini-identification-result.dto';
 import { IdentificationUploadRequestDto } from './dto/identification-upload-request.dto';
-import { IdentificationUploadResponseDto } from './dto/identification-upload-response.dto';
 import {
   ALLOWED_IMAGE_TYPES,
   IMAGE_UPLOAD_FIELD,
@@ -47,9 +48,9 @@ export class IdentificationController {
     }),
   )
   @ApiOperation({
-    summary: 'Enviar uma imagem para identificação',
+    summary: 'Identificar um Pokémon por imagem',
     description:
-      'Recebe e valida uma imagem. A integração com o Gemini será adicionada na próxima etapa.',
+      'Recebe uma imagem, valida o arquivo e usa o Gemini para sugerir qual Pokémon está representado.',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -57,8 +58,9 @@ export class IdentificationController {
     type: IdentificationUploadRequestDto,
   })
   @ApiOkResponse({
-    description: 'Imagem recebida e validada com sucesso.',
-    type: IdentificationUploadResponseDto,
+    description:
+      'Imagem analisada pelo Gemini. O resultado ainda será validado na PokéAPI.',
+    type: GeminiIdentificationResultDto,
   })
   @ApiBadRequestResponse({
     description: 'A imagem não foi enviada ou possui um formato inválido.',
@@ -66,7 +68,10 @@ export class IdentificationController {
   @ApiPayloadTooLargeResponse({
     description: 'A imagem ultrapassa o limite de 5 MB.',
   })
-  receiveImage(
+  @ApiBadGatewayResponse({
+    description: 'O Gemini não respondeu ou devolveu um resultado inválido.',
+  })
+  identifyImage(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -82,7 +87,7 @@ export class IdentificationController {
       }),
     )
     image: Express.Multer.File,
-  ): IdentificationUploadResponseDto {
-    return this.identificationService.receiveImage(image);
+  ): Promise<GeminiIdentificationResultDto> {
+    return this.identificationService.identifyImage(image);
   }
 }

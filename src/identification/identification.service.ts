@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 
-import { IdentificationUploadResponseDto } from './dto/identification-upload-response.dto';
+import { GeminiIdentificationResultDto } from '../gemini/dto/gemini-identification-result.dto';
+import { GeminiService } from '../gemini/gemini.service';
 
 @Injectable()
 export class IdentificationService {
-  receiveImage(image: Express.Multer.File): IdentificationUploadResponseDto {
-    return {
-      imagemRecebida: true,
-      tipoMime: image.mimetype,
-      tamanhoBytes: image.size,
-      mensagem: 'Imagem recebida e validada com sucesso.',
-    };
+  constructor(private readonly geminiService: GeminiService) {}
+
+  identifyImage(
+    image: Express.Multer.File,
+  ): Promise<GeminiIdentificationResultDto> {
+    return this.geminiService.identifyPokemon(image);
   }
 }
