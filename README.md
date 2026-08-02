@@ -666,13 +666,12 @@ Os dados de Pokémon são obtidos por meio da PokéAPI.
 
 Desenvolvido por **Victor** como projeto de estudo com NestJS, TypeScript, Ionic e integração com inteligência artificial.
 
+- [LinkedIn — Victor Hugo Ramiro Cota](https://www.linkedin.com/in/victor-hugo-ramiro-cota/)
+
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" width="58" alt="Master Ball" />
 
-## Contato
-
-- [LinkedIn — Victor Hugo Ramiro Cota](https://www.linkedin.com/in/victor-hugo-ramiro-cota/)
-  **Projeto Pokédex**
+**Projeto Pokédex**
 
 </div>
