@@ -22,7 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { GeminiIdentificationResultDto } from '../gemini/dto/gemini-identification-result.dto';
+import { IdentificationResponseDto } from './dto/identification-response.dto';
 import { IdentificationUploadRequestDto } from './dto/identification-upload-request.dto';
 import {
   ALLOWED_IMAGE_TYPES,
@@ -60,7 +60,7 @@ export class IdentificationController {
   @ApiOkResponse({
     description:
       'Imagem analisada pelo Gemini. O resultado ainda será validado na PokéAPI.',
-    type: GeminiIdentificationResultDto,
+    type: IdentificationResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'A imagem não foi enviada ou possui um formato inválido.',
@@ -87,7 +87,7 @@ export class IdentificationController {
       }),
     )
     image: Express.Multer.File,
-  ): Promise<GeminiIdentificationResultDto> {
+  ): Promise<IdentificationResponseDto> {
     return this.identificationService.identifyImage(image);
   }
 }

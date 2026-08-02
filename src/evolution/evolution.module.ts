@@ -8,5 +8,6 @@ import { EvolutionService } from './evolution.service';
   imports: [PokeApiModule],
   controllers: [EvolutionController],
   providers: [EvolutionService],
+  exports: [EvolutionService],
 })
 export class EvolutionModule {}

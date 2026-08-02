@@ -8,5 +8,6 @@ import { PokemonService } from './pokemon.service';
   imports: [PokeApiModule],
   controllers: [PokemonController],
   providers: [PokemonService],
+  exports: [PokemonService],
 })
 export class PokemonModule {}

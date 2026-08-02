@@ -6,6 +6,7 @@ import { ZodError } from 'zod';
 import { GeminiIdentificationResultDto } from './dto/gemini-identification-result.dto';
 import {
   GEMINI_IDENTIFICATION_PROMPT,
+  GEMINI_NARRATION_SYSTEM_INSTRUCTION,
   GEMINI_SYSTEM_INSTRUCTION,
   MINIMUM_IDENTIFICATION_CONFIDENCE,
 } from './gemini.constants';
@@ -14,6 +15,11 @@ import {
   geminiIdentificationJsonSchema,
   geminiIdentificationSchema,
 } from './schemas/gemini-identification.schema';
+import {
+  GeminiNarrationResult,
+  geminiNarrationJsonSchema,
+  geminiNarrationSchema,
+} from './schemas/gemini-narration.schema';
 
 @Injectable()
 export class GeminiService {
@@ -73,9 +79,9 @@ export class GeminiService {
         );
       }
 
-      const result = this.parseResponse(responseText);
+      const result = this.parseIdentificationResponse(responseText);
 
-      return this.normalizeResult(result);
+      return this.normalizeIdentificationResult(result);
     } catch (error: unknown) {
       if (error instanceof BadGatewayException) {
         throw error;
@@ -91,7 +97,49 @@ export class GeminiService {
     }
   }
 
-  private parseResponse(responseText: string): GeminiIdentificationResult {
+  async createNarration(prompt: string): Promise<GeminiNarrationResult> {
+    try {
+      const interaction = await this.client.interactions.create({
+        model: this.model,
+
+        system_instruction: GEMINI_NARRATION_SYSTEM_INSTRUCTION,
+
+        input: prompt,
+
+        response_format: {
+          type: 'text',
+          mime_type: 'application/json',
+          schema: geminiNarrationJsonSchema,
+        },
+
+        store: false,
+      });
+
+      const responseText = interaction.output_text;
+
+      if (!responseText) {
+        throw new BadGatewayException('O Gemini não retornou a narração.');
+      }
+
+      return this.parseNarrationResponse(responseText);
+    } catch (error: unknown) {
+      if (error instanceof BadGatewayException) {
+        throw error;
+      }
+
+      this.logger.error(
+        `Falha ao criar narração no Gemini: ${this.getErrorName(error)}`,
+      );
+
+      throw new BadGatewayException(
+        'Não foi possível criar a narração do Pokémon.',
+      );
+    }
+  }
+
+  private parseIdentificationResponse(
+    responseText: string,
+  ): GeminiIdentificationResult {
     try {
       const parsedResponse: unknown = JSON.parse(responseText);
 
@@ -107,7 +155,23 @@ export class GeminiService {
     }
   }
 
-  private normalizeResult(
+  private parseNarrationResponse(responseText: string): GeminiNarrationResult {
+    try {
+      const parsedResponse: unknown = JSON.parse(responseText);
+
+      return geminiNarrationSchema.parse(parsedResponse);
+    } catch (error: unknown) {
+      if (error instanceof SyntaxError || error instanceof ZodError) {
+        throw new BadGatewayException(
+          'O Gemini retornou uma narração em formato inválido.',
+        );
+      }
+
+      throw error;
+    }
+  }
+
+  private normalizeIdentificationResult(
     result: GeminiIdentificationResult,
   ): GeminiIdentificationResultDto {
     const normalizedConfidence = Math.round(result.confianca * 100) / 100;

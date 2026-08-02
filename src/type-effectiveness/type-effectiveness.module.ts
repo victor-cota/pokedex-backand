@@ -8,5 +8,6 @@ import { TypeEffectivenessService } from './type-effectiveness.service';
   imports: [PokeApiModule],
   controllers: [TypeEffectivenessController],
   providers: [TypeEffectivenessService],
+  exports: [TypeEffectivenessService],
 })
 export class TypeEffectivenessModule {}
