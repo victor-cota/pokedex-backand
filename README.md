@@ -125,13 +125,13 @@ Blaziken, o Pokémon chama, possui pernas fortes e combina os tipos fogo e lutad
 
 ## Endpoints
 
-| Método | Endpoint | Função |
-|---|---|---|
-| `GET` | `/health` | Verifica se a API está funcionando. |
-| `GET` | `/pokemon/:idOrName` | Busca e normaliza os dados de um Pokémon. |
-| `GET` | `/pokemon/:idOrName/effectiveness` | Calcula fraquezas, resistências, imunidades e vantagens ofensivas. |
-| `GET` | `/pokemon/:idOrName/evolution` | Retorna a cadeia evolutiva e suas condições. |
-| `POST` | `/identifications` | Recebe uma imagem e identifica o Pokémon com o Gemini. |
+| Método | Endpoint                           | Função                                                             |
+| ------ | ---------------------------------- | ------------------------------------------------------------------ |
+| `GET`  | `/health`                          | Verifica se a API está funcionando.                                |
+| `GET`  | `/pokemon/:idOrName`               | Busca e normaliza os dados de um Pokémon.                          |
+| `GET`  | `/pokemon/:idOrName/effectiveness` | Calcula fraquezas, resistências, imunidades e vantagens ofensivas. |
+| `GET`  | `/pokemon/:idOrName/evolution`     | Retorna a cadeia evolutiva e suas condições.                       |
+| `POST` | `/identifications`                 | Recebe uma imagem e identifica o Pokémon com o Gemini.             |
 
 ---
 
@@ -230,9 +230,7 @@ Exemplo de resposta da identificação visual:
   "evoluiDe": "pichu",
   "alturaMetros": 0.4,
   "pesoQuilos": 6,
-  "tipos": [
-    "electric"
-  ],
+  "tipos": ["electric"],
   "habilidades": [
     {
       "nome": "static",
@@ -328,17 +326,17 @@ src/
 
 ### Responsabilidade dos módulos
 
-| Módulo | Responsabilidade |
-|---|---|
-| `pokemon` | Regras e resposta normalizada do Pokémon. |
-| `identification` | Upload e coordenação do processo de identificação. |
-| `gemini` | Comunicação com a API do Gemini. |
-| `pokeapi` | Comunicação com a PokéAPI. |
-| `type-effectiveness` | Cálculo das relações de dano. |
-| `evolution` | Interpretação da cadeia evolutiva. |
-| `narration` | Tradução, adaptação e montagem da narração. |
-| `health` | Verificação de disponibilidade da API. |
-| `config` | Configuração e validação das variáveis de ambiente. |
+| Módulo               | Responsabilidade                                    |
+| -------------------- | --------------------------------------------------- |
+| `pokemon`            | Regras e resposta normalizada do Pokémon.           |
+| `identification`     | Upload e coordenação do processo de identificação.  |
+| `gemini`             | Comunicação com a API do Gemini.                    |
+| `pokeapi`            | Comunicação com a PokéAPI.                          |
+| `type-effectiveness` | Cálculo das relações de dano.                       |
+| `evolution`          | Interpretação da cadeia evolutiva.                  |
+| `narration`          | Tradução, adaptação e montagem da narração.         |
+| `health`             | Verificação de disponibilidade da API.              |
+| `config`             | Configuração e validação das variáveis de ambiente. |
 
 ---
 
@@ -552,14 +550,14 @@ resultado da identificação
 
 Para Pokémon com dois tipos, os multiplicadores são combinados:
 
-| Multiplicador | Significado |
-|---:|---|
-| `4x` | Fraqueza muito alta |
-| `2x` | Fraqueza |
-| `1x` | Dano normal |
-| `0,5x` | Resistência |
-| `0,25x` | Resistência alta |
-| `0x` | Imunidade |
+| Multiplicador | Significado         |
+| ------------: | ------------------- |
+|          `4x` | Fraqueza muito alta |
+|          `2x` | Fraqueza            |
+|          `1x` | Dano normal         |
+|        `0,5x` | Resistência         |
+|       `0,25x` | Resistência alta    |
+|          `0x` | Imunidade           |
 
 Exemplo para Charizard, dos tipos fogo e voador:
 
@@ -672,6 +670,9 @@ Desenvolvido por **Victor** como projeto de estudo com NestJS, TypeScript, Ionic
 
 <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" width="58" alt="Master Ball" />
 
-**Projeto Pokédex**
+## Contato
+
+- [LinkedIn — Victor Hugo Ramiro Cota](https://www.linkedin.com/in/victor-hugo-ramiro-cota/)
+  **Projeto Pokédex**
 
 </div>
