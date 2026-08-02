@@ -11,5 +11,5 @@ export const envValidationSchema = Joi.object({
 
   GEMINI_API_KEY: Joi.string().trim().required(),
 
-  GEMINI_MODEL: Joi.string().trim().default('gemini-3.5-flash'),
+  GEMINI_MODEL: Joi.string().trim().default('gemini-3.6-flash'),
 });

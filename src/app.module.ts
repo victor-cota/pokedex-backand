@@ -4,8 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { envValidationSchema } from './config/env.validation';
 import { EvolutionModule } from './evolution/evolution.module';
 import { HealthModule } from './health/health.module';
+import { IdentificationModule } from './identification/identification.module';
 import { PokemonModule } from './pokemon/pokemon.module';
 import { TypeEffectivenessModule } from './type-effectiveness/type-effectiveness.module';
+import { GeminiModule } from './gemini/gemini.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { TypeEffectivenessModule } from './type-effectiveness/type-effectiveness
     PokemonModule,
     TypeEffectivenessModule,
     EvolutionModule,
+    IdentificationModule,
+    GeminiModule,
   ],
 })
 export class AppModule {}
