@@ -15,6 +15,8 @@
   <img src="https://img.shields.io/badge/Node.js-Backend-339933?logo=nodedotjs&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/NestJS-API-E0234E?logo=nestjs&logoColor=white" alt="NestJS" />
   <img src="https://img.shields.io/badge/TypeScript-Tipado-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/PostgreSQL-18.4-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white" alt="Docker" />
   <img src="https://img.shields.io/badge/Gemini-Visão%20computacional-8E75B2?logo=googlegemini&logoColor=white" alt="Gemini" />
   <img src="https://img.shields.io/badge/PokéAPI-Fonte%20oficial-EF5350" alt="PokéAPI" />
   <img src="https://img.shields.io/badge/Swagger-Documentação-85EA2D?logo=swagger&logoColor=black" alt="Swagger" />
@@ -92,6 +94,10 @@ flowchart TD
 - Identificação visual com Gemini.
 - Resposta estruturada em JSON.
 - Validação do JSON retornado pelo modelo.
+- PostgreSQL 18.4 executando em container Docker.
+- Persistência local com volume do Docker.
+- TypeORM configurado com `synchronize: false`.
+- Estrutura e comandos preparados para migrations.
 
 ### Em evolução
 
@@ -263,6 +269,9 @@ Exemplo de resposta da identificação visual:
 - **Node.js**
 - **NestJS**
 - **TypeScript**
+- **PostgreSQL 18**
+- **TypeORM**
+- **Docker e Docker Compose**
 - **Google Gemini API**
 - **PokéAPI**
 - **Axios**
@@ -278,50 +287,60 @@ Exemplo de resposta da identificação visual:
 ## Organização do backend
 
 ```text
-src/
-├── config/
-│   └── env.validation.ts
-├── evolution/
-│   ├── dto/
-│   ├── evolution.controller.ts
-│   ├── evolution.module.ts
-│   └── evolution.service.ts
-├── gemini/
-│   ├── dto/
-│   ├── schemas/
-│   ├── gemini.constants.ts
-│   ├── gemini.module.ts
-│   └── gemini.service.ts
-├── health/
-│   ├── dto/
-│   ├── health.controller.ts
-│   └── health.module.ts
-├── identification/
-│   ├── dto/
-│   ├── identification.constants.ts
-│   ├── identification.controller.ts
-│   ├── identification.module.ts
-│   └── identification.service.ts
-├── narration/
-│   ├── dto/
-│   ├── narration.module.ts
-│   └── narration.service.ts
-├── pokeapi/
-│   ├── interfaces/
-│   ├── pokeapi.module.ts
-│   └── pokeapi.service.ts
-├── pokemon/
-│   ├── dto/
-│   ├── pokemon.controller.ts
-│   ├── pokemon.module.ts
-│   └── pokemon.service.ts
-├── type-effectiveness/
-│   ├── dto/
-│   ├── type-effectiveness.controller.ts
-│   ├── type-effectiveness.module.ts
-│   └── type-effectiveness.service.ts
-├── app.module.ts
-└── main.ts
+pokedex-backend/
+├── compose.yaml
+├── .env.example
+├── package.json
+├── README.md
+└── src/
+    ├── config/
+    │   └── env.validation.ts
+    ├── database/
+    │   ├── migrations/
+    │   ├── data-source.ts
+    │   ├── database-options.ts
+    │   └── database.module.ts
+    ├── evolution/
+    │   ├── dto/
+    │   ├── evolution.controller.ts
+    │   ├── evolution.module.ts
+    │   └── evolution.service.ts
+    ├── gemini/
+    │   ├── dto/
+    │   ├── schemas/
+    │   ├── gemini.constants.ts
+    │   ├── gemini.module.ts
+    │   └── gemini.service.ts
+    ├── health/
+    │   ├── dto/
+    │   ├── health.controller.ts
+    │   └── health.module.ts
+    ├── identification/
+    │   ├── dto/
+    │   ├── identification.constants.ts
+    │   ├── identification.controller.ts
+    │   ├── identification.module.ts
+    │   └── identification.service.ts
+    ├── narration/
+    │   ├── dto/
+    │   ├── narration.module.ts
+    │   └── narration.service.ts
+    ├── pokeapi/
+    │   ├── interfaces/
+    │   ├── pokeapi.module.ts
+    │   └── pokeapi.service.ts
+    ├── pokemon/
+    │   ├── dto/
+    │   ├── pokemon.controller.ts
+    │   ├── pokemon.module.ts
+    │   └── pokemon.service.ts
+    ├── type-effectiveness/
+    │   ├── dto/
+    │   ├── type-effectiveness.controller.ts
+    │   ├── type-effectiveness.module.ts
+    │   └── type-effectiveness.service.ts
+    ├── app.module.ts
+    └── main.ts
 ```
 
 ### Responsabilidade dos módulos
@@ -337,6 +356,7 @@ src/
 | `narration`          | Tradução, adaptação e montagem da narração.         |
 | `health`             | Verificação de disponibilidade da API.              |
 | `config`             | Configuração e validação das variáveis de ambiente. |
+| `database`           | Conexão com PostgreSQL, TypeORM e migrations.        |
 
 ---
 
@@ -347,6 +367,8 @@ Antes de iniciar, instale:
 - Node.js compatível com a versão do NestJS utilizada.
 - npm.
 - Git.
+- Docker Desktop com Docker Compose.
+- pgAdmin 4, opcional, para visualizar o banco.
 - Uma chave válida da Gemini API.
 
 Confira o ambiente:
@@ -355,6 +377,8 @@ Confira o ambiente:
 node --version
 npm --version
 git --version
+docker --version
+docker compose version
 ```
 
 ---
@@ -407,6 +431,13 @@ POKEAPI_BASE_URL=https://pokeapi.co/api/v2
 
 GEMINI_API_KEY=SUA_CHAVE_AQUI
 GEMINI_MODEL=SEU_MODELO_GEMINI
+
+DB_HOST=localhost
+DB_PORT=5433
+DB_USERNAME=pokedex_user
+DB_PASSWORD=SUA_SENHA_LOCAL
+DB_DATABASE=pokedex
+DB_LOGGING=false
 ```
 
 > Nunca envie o arquivo `.env` para o GitHub.  
@@ -414,9 +445,154 @@ GEMINI_MODEL=SEU_MODELO_GEMINI
 
 ---
 
+## Banco de dados com Docker
+
+O PostgreSQL do projeto executa em um container Docker separado do PostgreSQL instalado no Windows.
+
+```text
+PostgreSQL instalado no Windows → localhost:5432
+PostgreSQL do Docker            → localhost:5433
+PostgreSQL dentro do container  → porta 5432
+```
+
+O NestJS executado localmente conecta-se ao banco do Docker por:
+
+```env
+DB_HOST=localhost
+DB_PORT=5433
+```
+
+### Comandos do container PostgreSQL
+
+| Comando | Função |
+| ------- | ------ |
+| `npm run db:up` | Cria o container, se necessário, e inicia o PostgreSQL. |
+| `npm run db:start` | Inicia um container que já existe e está parado. |
+| `npm run db:stop` | Para o container sem removê-lo. |
+| `npm run db:down` | Para e remove o container e a rede, preservando o volume. |
+| `npm run db:status` | Mostra o estado, a saúde e as portas do container. |
+| `npm run db:logs` | Acompanha os logs do PostgreSQL em tempo real. Use `Ctrl + C` para sair. |
+
+### Primeira inicialização
+
+Inicie o banco:
+
+```bash
+npm run db:up
+```
+
+Confira o estado:
+
+```bash
+npm run db:status
+```
+
+Resultado esperado:
+
+```text
+pokedex-postgres   postgres:18.4-alpine   Up ... (healthy)   0.0.0.0:5433->5432/tcp
+```
+
+A parte `5433->5432` significa:
+
+```text
+porta 5433 do computador → porta 5432 do PostgreSQL no container
+```
+
+### Consultar os logs
+
+Para acompanhar os logs:
+
+```bash
+npm run db:logs
+```
+
+Para mostrar somente as últimas 50 linhas, sem manter o terminal preso:
+
+```bash
+docker compose logs --tail=50 postgres
+```
+
+Uma inicialização correta apresenta uma mensagem semelhante a:
+
+```text
+database system is ready to accept connections
+```
+
+### Testar o banco pelo terminal
+
+```bash
+docker compose exec postgres psql -U pokedex_user -d pokedex -c "SELECT current_database(), current_user, version();"
+```
+
+Resultado esperado:
+
+```text
+current_database: pokedex
+current_user: pokedex_user
+version: PostgreSQL 18.4
+```
+
+### Acessar pelo pgAdmin
+
+Cadastre um novo servidor no pgAdmin com estes dados:
+
+```text
+Name: Pokedex Docker
+Host name/address: localhost
+Port: 5433
+Maintenance database: pokedex
+Username: pokedex_user
+Password: o mesmo valor de DB_PASSWORD
+```
+
+O banco ficará disponível em:
+
+```text
+Servers
+└── Pokedex Docker
+    └── Databases
+        └── pokedex
+            └── Schemas
+                └── public
+                    └── Tables
+```
+
+Enquanto nenhuma migration tiver sido executada, a pasta `Tables` poderá aparecer vazia.
+
+### Comandos das migrations
+
+| Comando | Função |
+| ------- | ------ |
+| `npm run migration:show` | Lista as migrations e informa quais já foram executadas. |
+| `npm run migration:create -- src/database/migrations/NomeDaMigration` | Cria uma migration vazia para escrever SQL ou comandos TypeORM manualmente. |
+| `npm run migration:generate -- src/database/migrations/NomeDaMigration` | Gera uma migration comparando as entities com o banco atual. |
+| `npm run migration:run` | Executa todas as migrations pendentes. |
+| `npm run migration:revert` | Desfaz a última migration executada. |
+
+> O projeto usa `synchronize: false`. A estrutura do banco será alterada somente por migrations controladas.
+
+### Cuidado: comando destrutivo
+
+```bash
+docker compose down -v
+```
+
+O parâmetro `-v` remove o volume e apaga os dados do PostgreSQL do container. Use somente quando houver certeza de que os dados podem ser descartados.
+
+---
+
 ## Executando o projeto
 
 ### Desenvolvimento
+
+Primeiro, inicie o banco:
+
+```bash
+npm run db:up
+```
+
+Depois, inicie a API:
 
 ```bash
 npm run start:dev
@@ -570,23 +746,35 @@ Pedra contra voador = 2x
 
 ---
 
-## Possível evolução com banco de dados
+## Uso planejado do banco de dados
 
-Uma versão futura poderá usar PostgreSQL como cache persistente.
+A infraestrutura PostgreSQL já está configurada. As tabelas e relações serão criadas por migrations conforme o modelo de dados do projeto for definido.
+
+O fluxo planejado é:
 
 ```text
 Gemini identifica o número
         ↓
-Backend procura no banco
-        ├── encontrou: retorna os dados salvos
+Backend procura no PostgreSQL
+        ├── encontrou: retorna os dados persistidos
         └── não encontrou:
                 consulta a PokéAPI
                 normaliza
                 calcula
                 cria a narração
-                salva
+                salva no banco
                 retorna
 ```
+
+O PostgreSQL também poderá armazenar:
+
+- catálogo base de Pokémon;
+- dados normalizados da PokéAPI;
+- histórico de identificações;
+- favoritos do usuário;
+- registros de Pokémon já escaneados;
+- narrações geradas;
+- informações auxiliares para cache persistente.
 
 Isso poderá reduzir:
 
@@ -601,6 +789,10 @@ Isso poderá reduzir:
 
 - [x] Criar o projeto NestJS.
 - [x] Configurar `.env` e `.env.example`.
+- [x] Configurar PostgreSQL 18 com Docker Compose.
+- [x] Configurar TypeORM e o DataSource das migrations.
+- [x] Documentar comandos do banco e acesso pelo pgAdmin.
+- [ ] Criar as primeiras tabelas e relações por migrations.
 - [x] Adicionar Swagger.
 - [x] Integrar a PokéAPI.
 - [x] Buscar e normalizar Pokémon.
@@ -665,9 +857,9 @@ Os dados de Pokémon são obtidos por meio da PokéAPI.
 ## Autor
 
 Desenvolvido por **Victor** como projeto de estudo com NestJS, TypeScript, Ionic e integração com inteligência artificial.
-
-- [LinkedIn — Victor Hugo Ramiro Cota](https://www.linkedin.com/in/victor-hugo-ramiro-cota/)
-
+<div align="center">
+[LinkedIn — Victor Hugo Ramiro Cota](https://www.linkedin.com/in/victor-hugo-ramiro-cota/)
+</div>
 <div align="center">
 
 <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png" width="58" alt="Master Ball" />

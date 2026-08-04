@@ -7,6 +7,7 @@ import { HealthModule } from './health/health.module';
 import { IdentificationModule } from './identification/identification.module';
 import { PokemonModule } from './pokemon/pokemon.module';
 import { TypeEffectivenessModule } from './type-effectiveness/type-effectiveness.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -24,6 +25,9 @@ import { TypeEffectivenessModule } from './type-effectiveness/type-effectiveness
     TypeEffectivenessModule,
     EvolutionModule,
     IdentificationModule,
+    DatabaseModule,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
