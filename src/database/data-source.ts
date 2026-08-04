@@ -2,8 +2,6 @@
 import { DataSource } from 'typeorm';
 import { createDatabaseOptions } from './database-options';
 
-export const applicationDataSource = new DataSource(
-    createDatabaseOptions(),
-);
+export const applicationDataSource = new DataSource(createDatabaseOptions());
 
 export default applicationDataSource;

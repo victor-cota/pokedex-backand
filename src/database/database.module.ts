@@ -5,21 +5,21 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { createDatabaseOptions } from './database-options';
 
 @Module({
-    imports: [
-        TypeOrmModule.forRootAsync({
-            useFactory: (): TypeOrmModuleOptions => {
-                const databaseOptions = createDatabaseOptions();
+  imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: (): TypeOrmModuleOptions => {
+        const databaseOptions = createDatabaseOptions();
 
-                return {
-                    ...databaseOptions, 
+        return {
+          ...databaseOptions,
 
-                    autoLoadEntities: true,
+          autoLoadEntities: true,
 
-                    retryAttempts: 10,
-                    retryDelay: 3000,
-                }
-            }
-        })
-    ]
+          retryAttempts: 10,
+          retryDelay: 3000,
+        };
+      },
+    }),
+  ],
 })
 export class DatabaseModule {}

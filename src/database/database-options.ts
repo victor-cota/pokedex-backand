@@ -1,19 +1,10 @@
-//Monta a configuração central do TypeORM.
-
 import 'dotenv/config';
 
 import { join } from 'node:path';
-import { DataSourceOptions } from 'typeorm';
+import type { DataSourceOptions } from 'typeorm';
 
-const requiredDatabaseVariables = [
-  'DB_HOST',
-  'DB_PORT',
-  'DB_USERNAME',
-  'DB_PASSWORD',
-  'DB_DATABASE',
-] as const;
-
-type RequiredDatabaseVariable = (typeof requiredDatabaseVariables)[number];
+type RequiredDatabaseVariable =
+  'DB_HOST' | 'DB_PORT' | 'DB_USERNAME' | 'DB_PASSWORD' | 'DB_DATABASE';
 
 function getRequiredEnvironmentVariable(
   name: RequiredDatabaseVariable,
